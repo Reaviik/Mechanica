@@ -1,0 +1,10 @@
+{
+  "variants":{
+    "facing=north":{"model": "mechanica:block/stabilizer"},
+    "facing=east":{"model": "mechanica:block/stabilizer", "y": 90},
+    "facing=south":{"model": "mechanica:block/stabilizer", "y": 180},
+    "facing=west":{"model": "mechanica:block/stabilizer", "y": 270},
+    "facing=up":{"model": "mechanica:block/stabilizer", "z": 90},
+    "facing=dawn":{"model": "mechanica:block/stabilizer", "z": 180}
+  }
+}

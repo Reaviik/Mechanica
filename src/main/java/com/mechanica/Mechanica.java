@@ -51,6 +51,7 @@ public class Mechanica {
     }
     public void clientSetup(final FMLClientSetupEvent event){
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MECHANIC_MINER.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.STABILIZER.get(), RenderType.cutout());
 
         MenuScreens.register(ModMenuTypes.MECHANIC_MINER_MENU.get(), MechanicMinerScreen::new);
     }

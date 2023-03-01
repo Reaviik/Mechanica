@@ -20,6 +20,8 @@ public class MechanicMinerScreen extends AbstractContainerScreen<MechanicMinerMe
     public MechanicMinerScreen(MechanicMinerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
     }
+    public static String status = "";
+    public static int stability = 0;
     private static final Logger LOGGER = LogUtils.getLogger();
     //Renderiza a GUI na posião x, y, com base no tanahdo da imagem e da tela
     @Override
@@ -44,7 +46,9 @@ public class MechanicMinerScreen extends AbstractContainerScreen<MechanicMinerMe
     }
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        this.font.draw(matrixStack, this.title, +19.0F, -54.0F, 16777215);
+        this.font.draw(matrixStack, this.title, 8.0F, -52.0F, 16777215);
         this.font.draw(matrixStack, this.playerInventoryTitle, 8.0F, (float) (this.imageHeight - 152), 16777215);
+        this.font.draw(matrixStack, status, 178.0F, - 52.0F, 16777215);
+        this.font.draw(matrixStack, "Chance de Obter resultados "+((int) Math.ceil(stability))+"%", 178.0F, - 42.0F, 16777215);
     }
 }

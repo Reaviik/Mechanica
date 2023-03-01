@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mechanica:block/mechanica_miner"
+    }
+  }
+}

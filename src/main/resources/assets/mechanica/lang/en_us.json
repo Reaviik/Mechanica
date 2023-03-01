@@ -1,4 +1,6 @@
 {
   "itemGroup.mechanica": "Mechanica",
-  "tooltip.mechanica.pressShift": "Press §e[Shift]§f to description"
+  "tooltip.mechanica.pressShift": "Press §e[Shift]§f to description",
+
+  "item.mechanica.stabilizer": "Stabilizer"
 }
