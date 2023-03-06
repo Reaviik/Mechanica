@@ -40,7 +40,6 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.*;
-import java.util.Objects;
 
 public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvider {
     private final ItemStackHandler itemHandler = new ItemStackHandler(34) {
@@ -163,10 +162,11 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
 
     @Deprecated
     private static boolean hasStructure(MechanicMinerBlockEntity entity){
-        String key = "";
-        File file = new File("assets/mechanica/config/config_miner.json");
+        String key = "minecraft:glass"; // Remover
+        File file = new File("com/mechanica/config/config_miner.json");
         try {
             FileReader reader = new FileReader(file);
+            System.out.println(reader);
             JsonObject jsonObject = new JsonParser().parse(reader).getAsJsonObject();
             key = jsonObject.get("structure").getAsString();
         } catch (IOException e) {
@@ -294,29 +294,30 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
                 pBlockEntity.progress++;
             }else{
                 setChanged(pLevel, pPos, pState);
-                setStabilit(pBlockEntity);
+                setStability(pBlockEntity);
                 hasStabilizer(pLevel , pPos);
                 hasStructure(pBlockEntity);
                 pBlockEntity.resetProgress();
             }
     }
     //Seta a Stabilidade
-    public static void setStabilit(MechanicMinerBlockEntity entity){
+    public static void setStability(MechanicMinerBlockEntity entity){
         //Very Stable, Stable, Stabilized, Unstable, Very Unstable
         int status = 0;
         double stability = 0;
         for(int i = 1; i <= 4; i++) {
             //TODO
-            if (entity.itemHandler.getStackInSlot(i).getItem() == Items.INFESTED_COBBLESTONE){
+            if (entity.itemHandler.getStackInSlot(i).getItem() == ModBlocks.STABILIZER.get().asItem()){
                 status++;
-                switch (status){
-                    case 1: { MechanicMinerScreen.status = "Very Unstable"; break;}
-                    case 2: { MechanicMinerScreen.status = "Unstable"; break;}
-                    case 3: { MechanicMinerScreen.status = "Stable"; break;}
-                    case 4: { MechanicMinerScreen.status = "Very stable"; break;}
-                    default: { MechanicMinerScreen.status = "None"; break;}
-                }
             }
+            switch (status){
+                case 1: { MechanicMinerScreen.status = "Very Unstable"; break;}
+                case 2: { MechanicMinerScreen.status = "Unstable"; break;}
+                case 3: { MechanicMinerScreen.status = "Stable"; break;}
+                case 4: { MechanicMinerScreen.status = "Very stable"; break;}
+                default: { MechanicMinerScreen.status = "None"; break;}
+            }
+
             //50 / 25 / 12.5 / 6.25
             if(1 == 1){stability = stability + 3.125;}
             if(1 == 1){stability = stability + 6.25;}

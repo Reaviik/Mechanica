@@ -1,6 +1,7 @@
 package com.mechanica.block.screen.slot;
 
 
+import com.mechanica.block.ModBlocks;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.items.IItemHandler;
@@ -14,7 +15,7 @@ public class ModUpgradeSlot extends SlotItemHandler {
     //TODO
     @Override
     public boolean mayPlace(@NotNull ItemStack stack) {
-        return (Blocks.INFESTED_COBBLESTONE.asItem() == stack.getItem());
+        return (ModBlocks.STABILIZER.get().asItem() == stack.getItem());
     }
 
     @Override
