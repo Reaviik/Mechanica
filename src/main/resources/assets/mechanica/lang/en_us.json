@@ -2,5 +2,7 @@
   "itemGroup.mechanica": "Mechanica",
   "tooltip.mechanica.pressShift": "Press §e[Shift]§f to description",
 
-  "item.mechanica.stabilizer": "Stabilizer"
+  "item.mechanica.stabilizer": "Stabilizer",
+  "item.mechanica.nome1_matrix": "nome1 Matrix",
+  "tooltip.minersdream.pressShift": "Pressione Shift para +"
 }

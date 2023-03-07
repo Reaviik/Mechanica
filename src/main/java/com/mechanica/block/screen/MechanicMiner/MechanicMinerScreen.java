@@ -48,7 +48,7 @@ public class MechanicMinerScreen extends AbstractContainerScreen<MechanicMinerMe
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
         this.font.draw(matrixStack, this.title, 8.0F, -52.0F, 16777215);
         this.font.draw(matrixStack, this.playerInventoryTitle, 8.0F, (float) (this.imageHeight - 152), 16777215);
-        this.font.draw(matrixStack, status, 178.0F, - 52.0F, 16777215);
-        this.font.draw(matrixStack, "Chance de Obter resultados "+((int) Math.ceil(stability))+"%", 178.0F, - 42.0F, 16777215);
+        this.font.draw(matrixStack, "Estabilidade: "+ Math.ceil(stability) +"%", 178.0F, - 52.0F, 16777215);
+        this.font.draw(matrixStack, "Chance de Obter resultados "+status+"%", 178.0F, - 42.0F, 16777215);
     }
 }

@@ -32,8 +32,7 @@ public class ModBlocks {
                     .strength(9f).lightLevel(LUZ -> {return 1;})), ModCreativeModeTab.Mechanica_TAB);
     public static final RegistryObject<Block> STABILIZER = registerBlock("stabilizer",
             () -> new Stabilizer(BlockBehaviour.Properties.of(Material.METAL).noOcclusion()
-                    .strength(9f).lightLevel(LUZ -> {return 1;})), ModCreativeModeTab.Mechanica_TAB);
-
+                    .strength(3f).lightLevel(LUZ -> {return 1;})), ModCreativeModeTab.Mechanica_TAB);
 
 
     //Tooltip
@@ -48,9 +47,9 @@ public class ModBlocks {
             @Override
             public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
                 pTooltip.add(new TranslatableComponent("tooltip.mechanica.pressShift"));
-                    if(Screen.hasShiftDown()) {
-                        pTooltip.remove(1);
-                        pTooltip.add(new TranslatableComponent(tooltipKey));
+                if(Screen.hasShiftDown()) {
+                    pTooltip.remove(1);
+                    pTooltip.add(new TranslatableComponent(tooltipKey));
                 }
             }
         });

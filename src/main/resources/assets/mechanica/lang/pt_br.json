@@ -2,5 +2,6 @@
   "itemGroup.mechanica": "Mechanica",
   "tooltip.mechanica.pressShift": "Pressione §e[Shift]§f para descrições",
 
-  "item.mechanica.stabilizer": "Stabilizador"
+  "item.mechanica.stabilizer": "Stabilizador",
+  "item.mechanica.nome1_matrix": "nome1 Matriz"
 }

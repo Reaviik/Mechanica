@@ -1,7 +1,7 @@
 package com.mechanica.block.custom.MechanicMiner;
 
 import com.mechanica.block.entity.ModBlockEntities;
-import com.mechanica.block.entity.custom.mechanic.MechanicMinerBlockEntity;
+import com.mechanica.block.entity.custom.miner.MechanicMinerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;

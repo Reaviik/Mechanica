@@ -1,7 +1,7 @@
 package com.mechanica.block.screen.MechanicMiner;
 
 import com.mechanica.block.ModBlocks;
-import com.mechanica.block.entity.custom.mechanic.MechanicMinerBlockEntity;
+import com.mechanica.block.entity.custom.miner.MechanicMinerBlockEntity;
 import com.mechanica.block.screen.ModMenuTypes;
 import com.mechanica.block.screen.slot.ModInputSlot;
 import com.mechanica.block.screen.slot.ModResultSlot;

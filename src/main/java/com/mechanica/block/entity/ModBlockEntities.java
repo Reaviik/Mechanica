@@ -2,7 +2,7 @@ package com.mechanica.block.entity;
 
 import com.mechanica.Mechanica;
 import com.mechanica.block.ModBlocks;
-import com.mechanica.block.entity.custom.mechanic.MechanicMinerBlockEntity;
+import com.mechanica.block.entity.custom.miner.MechanicMinerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
