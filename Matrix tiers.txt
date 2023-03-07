@@ -1,0 +1,13 @@
+Starlume Crystal - um cristal azul com estrelas brilhantes dentro que emitem uma luz suave e reconfortante.
+Sunburst Crystal - um cristal laranja e dourado que brilha com uma luz quente e intensa.
+Moonshadow Crystal - um cristal roxo escuro com um efeito de sombra misterioso que parece refletir a luz da lua.
+Emberglow Crystal - um cristal vermelho brilhante que parece estar constantemente em chamas, dando-lhe um brilho quente.
+Aquamist Crystal - um cristal turquesa com uma textura de névoa que parece refletir a luz de forma suave e suave.
+Earthsong Crystal - um cristal marrom terroso com veias douradas que parecem pulsar com a energia da natureza.
+
+Starlume Crystal - #4C4CFF (um azul claro com tons de roxo)
+Sunburst Crystal - #FFA500 (um laranja brilhante e vibrante)
+Moonshadow Crystal - #663399 (um roxo profundo e escuro)
+Emberglow Crystal - #FF4500 (um vermelho vivo e intenso)
+Aquamist Crystal - #00CED1 (um tom de turquesa ciano)
+Earthsong Crystal - #8B4513 (um marrom terroso)
