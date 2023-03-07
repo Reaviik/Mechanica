@@ -1,13 +1,10 @@
 package com.mechanica.block.entity.custom.miner;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mechanica.block.ModBlocks;
 import com.mechanica.block.entity.ModBlockEntities;
 import com.mechanica.block.screen.MechanicMiner.MechanicMinerMenu;
 import com.mechanica.block.screen.MechanicMiner.MechanicMinerScreen;
 import com.mechanica.item.ModItems;
-import com.mechanica.utils.ITags;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,7 +40,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
-import java.io.*;
 
 public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvider {
     private final ItemStackHandler itemHandler = new ItemStackHandler(34) {
@@ -128,22 +125,18 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
         super.invalidateCaps();
         lazyItemHandler.invalidate();
     }
-
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag) {
         tag.put("inventory", itemHandler.serializeNBT());
-        tag.putInt("mechanic_miner.progress", progress);
+        //tag.putInt("mechanic_miner.progress", progress);
         super.saveAdditional(tag);
     }
-
     @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
         itemHandler.deserializeNBT(nbt.getCompound("inventory"));
     }
-
     private static final Logger LOGGER = LogUtils.getLogger();
-
     public void drops() {
         SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
         for (int i = 0; i < itemHandler.getSlots(); i++) {
@@ -152,40 +145,9 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
 
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
-
-    //TODO
-    private static boolean hasRecipe(MechanicMinerBlockEntity entity) {
-        return false;
-    }
-
-    private static int hasUpgrades(@NotNull MechanicMinerBlockEntity entity) {
-        //Reseta o MaxProgress do bloco
-        int overclock = 0;
-        entity.maxProgress = 180;
-        //Verifica todos os slots de 1 a 3
-        for (int i = 1; i <= 3; i++) {
-            //TODO
-            if (entity.itemHandler.getStackInSlot(i).getItem() == Items.COAL) {
-                entity.maxProgress -= entity.maxProgress * 0.5;
-                overclock++;
-            }
-        }
-        return overclock;
-    }
-
     @Deprecated
     private static boolean hasStructure(MechanicMinerBlockEntity entity) {
-        String key = "minecraft:glass"; // Remover
-        File file = new File("com/mechanica/config/config_miner.json");
-        try {
-            FileReader reader = new FileReader(file);
-            System.out.println(reader);
-            JsonObject jsonObject = new JsonParser().parse(reader).getAsJsonObject();
-            key = jsonObject.get("structure").getAsString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        String key = "minecraft:glass";
         BlockState structure = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(key)).defaultBlockState();
         // Direção norte
         boolean northHasWall = true;
@@ -249,28 +211,20 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
                 }
             }
         }
-
-        LOGGER.info("North: " + northHasWall);
-        LOGGER.info("East: " + eastHasWall);
-        LOGGER.info("South: " + southHasWall);
-        LOGGER.info("West: " + westHasWall);
-        LOGGER.info("Top: " + topHasWall);
-        LOGGER.info("Bottom: " + bottomHasWall);
         return northHasWall && eastHasWall && southHasWall && eastHasWall && westHasWall && topHasWall && bottomHasWall;
     }
-
     public static void hasStabilizer(LevelAccessor pLevel, BlockPos pPos) {
-        MechanicMinerScreen.stability = 0;
+        int stability = 0;
         BlockState x02 = pLevel.getBlockState(new BlockPos(pPos.getX() - 3, pPos.getY(), pPos.getZ())).getBlock().defaultBlockState();
         BlockState x20 = pLevel.getBlockState(new BlockPos(pPos.getX() + 3, pPos.getY(), pPos.getZ())).getBlock().defaultBlockState();
         BlockState z02 = pLevel.getBlockState(new BlockPos(pPos.getX(), pPos.getY(), pPos.getZ() - 3)).getBlock().defaultBlockState();
         BlockState z20 = pLevel.getBlockState(new BlockPos(pPos.getX(), pPos.getY(), pPos.getZ() + 3)).getBlock().defaultBlockState();
 
         BlockState t1 = ModBlocks.STABILIZER.get().defaultBlockState();
-        BlockState t2 = ModBlocks.STABILIZER.get().defaultBlockState();
-        BlockState t3 = ModBlocks.STABILIZER.get().defaultBlockState();
-        BlockState t4 = ModBlocks.STABILIZER.get().defaultBlockState();
-        BlockState t5 = ModBlocks.STABILIZER.get().defaultBlockState();
+        BlockState t2 = Blocks.AMETHYST_BLOCK.defaultBlockState();
+        BlockState t3 = Blocks.IRON_ORE.defaultBlockState();
+        BlockState t4 = Blocks.ACACIA_DOOR.defaultBlockState();
+        BlockState t5 = Blocks.ACACIA_LOG.defaultBlockState();
         BlockState t6 = Blocks.CHEST.defaultBlockState();
 
         BlockState[] firstSix = new BlockState[]{x02, x20, z02, z20};
@@ -279,24 +233,14 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
         for (int i = 0; i < firstSix.length; i++) {
             for (int j = 0; j < lastSix.length; j++) {
                 if (firstSix[i] == lastSix[j]) {
-                    MechanicMinerScreen.stability = (int) ((j + 1) * 4.166);
-                    break;
+                    stability = stability + (j+1);
+                    MechanicMinerScreen.stability = (int) (stability * 4.166);
+                    LOGGER.info(String.valueOf(stability));
                 }
             }
         }
 
     }
-
-    private static void craftItem(MechanicMinerBlockEntity entity) {
-        hasUpgrades(entity);
-        Level level = entity.level;
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
-        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
-        }
-        entity.resetProgress();
-    }
-
     //Imput Manager
     public static void getChance(MechanicMinerBlockEntity entity) {
         chance = 0;
@@ -320,14 +264,12 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
                     chance += 12;
                 }
                 MechanicMinerScreen.status = new String(String.valueOf((chance) * setUpgrade(entity)));
-                LOGGER.info("chance: "+chance);
             }
-
+    static int tick = 0;
     //Tick Manager
     public static void tick(Level pLevel, BlockPos pPos, BlockState pState, MechanicMinerBlockEntity pBlockEntity) {
-        if (pBlockEntity.progress == pBlockEntity.maxProgress && hasRecipe(pBlockEntity)) {
+        if (pBlockEntity.progress == pBlockEntity.maxProgress) {
             setChanged(pLevel, pPos, pState);
-            craftItem(pBlockEntity);
         }
         if (pBlockEntity.progress <= pBlockEntity.maxProgress) {
             setChanged(pLevel, pPos, pState);
@@ -337,13 +279,13 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
             getChance(pBlockEntity);
             hasStabilizer(pLevel, pPos);
             hasStructure(pBlockEntity);
+            tick++;
             pBlockEntity.resetProgress();
         }
     }
-
     //Seta a Stabilidade
     public static int setUpgrade(MechanicMinerBlockEntity entity) {
-        int status = 0;
+        int status = 1;
         for (int i = 1; i <= 4; i++) {
             //TODO
             if (entity.itemHandler.getStackInSlot(i).getItem() == ModBlocks.STABILIZER.get().asItem()) {
@@ -351,7 +293,6 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
             }
             //50 / 25 / 12.5 / 6.25
         }
-        LOGGER.info("upgrads: "+status);
         return status;
     }
     //Reseta o progresso
