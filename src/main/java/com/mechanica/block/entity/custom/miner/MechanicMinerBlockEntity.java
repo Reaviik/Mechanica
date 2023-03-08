@@ -1,4 +1,5 @@
 package com.mechanica.block.entity.custom.miner;
+
 import com.mechanica.block.ModBlocks;
 import com.mechanica.block.entity.ModBlockEntities;
 import com.mechanica.block.screen.MechanicMiner.MechanicMinerMenu;
@@ -26,21 +27,16 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-
 import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.Random;
 
 
@@ -51,17 +47,13 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
             setChanged();
         }
     };
-    private final LevelAccessor Level = this.getLevel();
-    private final BlockPos Pos = this.getBlockPos();
-    private static int stabilized = 0;
 
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     private LazyOptional<ItemStackHandler> lazyItemHandler = LazyOptional.empty();
 
     protected final ContainerData data;
     private int progress = 0;
-    private int maxProgress = hasSpeedUP(this);
-    private int quantity = hasStrengUP(this);
+    private int maxProgress = 180;
+    private int quantity = 1;
     private static int matrix = 0;
     public MechanicMinerBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.MECHANIC_MINER_BLOCK_ENTITY.get(), pPos, pBlockState);
@@ -138,16 +130,16 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
 
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
-    public int hasSpeedUP(MechanicMinerBlockEntity entity) {
+    public void hasSpeedUP(MechanicMinerBlockEntity entity) {
         int speed = 180;
         for (int i = 1; i <= 4; i++) {
             if (entity.itemHandler.getStackInSlot(i).getItem().getDefaultInstance().getItem() == Items.COBBLESTONE.getDefaultInstance().getItem()) {
                 speed -= 20;
             }
         }
-        return speed;
+        progress = speed;
     }
-    public int hasStrengUP(MechanicMinerBlockEntity entity) {
+    public void hasStrengUP(MechanicMinerBlockEntity entity) {
         int streng = 1;
         for (int i = 1; i <= 4; i++) {
             //TODO
@@ -155,7 +147,7 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
                 streng += 2;
             }
         }
-        return streng;
+        quantity = streng;
     }
     @Deprecated
     private static boolean hasStructure(MechanicMinerBlockEntity entity){
@@ -308,21 +300,31 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
                 int randomCinquenta = random.nextInt(cinquenta.length);
                 drop = cinquenta[randomCinquenta];
             }
-
             ItemStack finalDrop = drop;
             BlockEntity inventory = level.getBlockEntity(pPos);
+            finalDrop.setCount(1);
             inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {
                 if(capability instanceof IItemHandlerModifiable) {
                     for (int i = 7; i < capability.getSlots(); i++) {
                         ItemStack item = capability.getStackInSlot(i);
                         if (item.isEmpty()) {
-                            for (int j = 0; j < entity.hasStrengUP(entity); j++){
+                            for (int j = 0; j < entity.quantity; j++){
                                 capability.insertItem(i, finalDrop, false);
+                                matrix--;
+                                if (matrix <= 0){
+                                    capability.extractItem(0,1,true);
+                                    matrix = 5;
+                                }
                             }
                             break;
                         } else if (item.getItem() == finalDrop.getItem() && item.getCount() < capability.getSlotLimit(i)) {
-                            for (int l = 0; l < entity.hasStrengUP(entity); l++){
+                            for (int l = 0; l < entity.quantity; l++){
                                 capability.insertItem(i, finalDrop, false);
+                                matrix--;
+                                if (matrix <= 0){
+                                    capability.extractItem(0,1,true);
+                                    matrix = 5;
+                                }
                             }
                             break;
                         }
@@ -332,15 +334,16 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
         }
     }
     public static void tick(Level pLevel, BlockPos pPos, BlockState pState, MechanicMinerBlockEntity pBlockEntity) {
-        if (pBlockEntity.progress == pBlockEntity.hasSpeedUP(pBlockEntity)) {
+        if (pBlockEntity.progress < pBlockEntity.maxProgress) {
+            setChanged(pLevel, pPos, pState);
+            pBlockEntity.progress++;
+        }
+        else {
             pBlockEntity.hasStrengUP(pBlockEntity);
+            pBlockEntity.hasSpeedUP(pBlockEntity);
             setChanged(pLevel, pPos, pState);
             craft(pLevel,pPos,pBlockEntity);
             pBlockEntity.resetProgress();
-        }
-        else {
-            setChanged(pLevel, pPos, pState);
-            pBlockEntity.progress++;
         }
     }
     //Reseta o progresso
