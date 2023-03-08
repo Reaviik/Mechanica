@@ -1,5 +1,4 @@
 package com.mechanica.block.entity.custom.miner;
-
 import com.mechanica.block.ModBlocks;
 import com.mechanica.block.entity.ModBlockEntities;
 import com.mechanica.block.screen.MechanicMiner.MechanicMinerMenu;
@@ -32,15 +31,18 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Random;
+
 
 public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvider {
     private final ItemStackHandler itemHandler = new ItemStackHandler(34) {
@@ -58,32 +60,26 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
 
     protected final ContainerData data;
     private int progress = 0;
-    private int maxProgress = 180;
+    private int maxProgress = hasSpeedUP(this);
+    private int quantity = hasStrengUP(this);
     private static int matrix = 0;
     public MechanicMinerBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.MECHANIC_MINER_BLOCK_ENTITY.get(), pPos, pBlockState);
         this.data = new ContainerData() {
             @Override
             public int get(int pIndex) {
-                switch (pIndex) {
-                    case 0:
-                        return MechanicMinerBlockEntity.this.progress;
-                    case 1:
-                        return MechanicMinerBlockEntity.this.maxProgress;
-                    default:
-                        return 0;
-                }
+                return switch (pIndex) {
+                    case 0 -> MechanicMinerBlockEntity.this.progress;
+                    case 1 -> MechanicMinerBlockEntity.this.maxProgress;
+                    default -> 0;
+                };
             }
 
             @Override
             public void set(int pIndex, int pValue) {
                 switch (pIndex) {
-                    case 0:
-                        MechanicMinerBlockEntity.this.progress = pValue;
-                        break;
-                    case 1:
-                        MechanicMinerBlockEntity.this.maxProgress = pValue;
-                        break;
+                    case 0 -> MechanicMinerBlockEntity.this.progress = pValue;
+                    case 1 -> MechanicMinerBlockEntity.this.maxProgress = pValue;
                 }
             }
 
@@ -105,7 +101,7 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
     }
     @Nullable
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @javax.annotation.Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return lazyItemHandler.cast();
         }
@@ -142,26 +138,25 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
 
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
-    //TODO
-    private static boolean hasRecipe(MechanicMinerBlockEntity entity) {
-        return false;
-    }
-
-    private static int hasUpgrades(@NotNull MechanicMinerBlockEntity entity) {
-        //Reseta o MaxProgress do bloco
-        int overclock = 0;
-        entity.maxProgress = 180;
-        //Verifica todos os slots de 1 a 3
-        for (int i = 1; i <= 3; i++) {
-            //TODO
-            if (entity.itemHandler.getStackInSlot(i).getItem() == Items.COAL) {
-                entity.maxProgress -= entity.maxProgress * 0.5;
-                overclock++;
+    public int hasSpeedUP(MechanicMinerBlockEntity entity) {
+        int speed = 180;
+        for (int i = 1; i <= 4; i++) {
+            if (entity.itemHandler.getStackInSlot(i).getItem().getDefaultInstance().getItem() == Items.COBBLESTONE.getDefaultInstance().getItem()) {
+                speed -= 20;
             }
         }
-        return overclock;
+        return speed;
     }
-
+    public int hasStrengUP(MechanicMinerBlockEntity entity) {
+        int streng = 1;
+        for (int i = 1; i <= 4; i++) {
+            //TODO
+            if (entity.itemHandler.getStackInSlot(i).getItem() == Items.STONE.getDefaultInstance().getItem()) {
+                streng += 2;
+            }
+        }
+        return streng;
+    }
     @Deprecated
     private static boolean hasStructure(MechanicMinerBlockEntity entity){
         String key = "minecraft:glass";
@@ -229,14 +224,7 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
                 }
             }
         }
-
-        LOGGER.info("North: "+northHasWall);
-        LOGGER.info("East: "+eastHasWall);
-        LOGGER.info("South: "+southHasWall);
-        LOGGER.info("West: "+westHasWall);
-        LOGGER.info("Top: "+topHasWall);
-        LOGGER.info("Bottom: "+bottomHasWall);
-        return northHasWall && eastHasWall && southHasWall && eastHasWall && westHasWall && topHasWall && bottomHasWall;
+        return northHasWall && eastHasWall && southHasWall && westHasWall && topHasWall && bottomHasWall;
     }
     public static boolean hasStabilizer(LevelAccessor pLevel, BlockPos pPos) {
         int stability = 0;
@@ -280,7 +268,6 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
                 item == ModItems.STARLUME_CRYSTAL.get();
     }
     public static void craft(LevelAccessor level, BlockPos pPos, MechanicMinerBlockEntity entity){
-        LOGGER.info("F: "+hasFull(level,pPos,entity) +" M "+isMatrix(entity));
         if(hasFull(level,pPos,entity) && isMatrix(entity)){
             ItemStack drop = null;
 
@@ -321,24 +308,32 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
                 int randomCinquenta = random.nextInt(cinquenta.length);
                 drop = cinquenta[randomCinquenta];
             }
+
             ItemStack finalDrop = drop;
             BlockEntity inventory = level.getBlockEntity(pPos);
             inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {
-                if (capability instanceof IItemHandlerModifiable) {
-                    for(int i = 7; i < capability.getSlots(); i++){
-                        finalDrop.setCount(capability.getStackInSlot(i).getCount()+5);
-                        if(capability.getStackInSlot(i).getCount() < capability.getSlotLimit(i) && capability.getStackInSlot(i).getItem().getDefaultInstance() == finalDrop.getItem().getDefaultInstance() || capability.getStackInSlot(i).getItem() == Items.AIR.getDefaultInstance().getItem()){
-                            capability.insertItem(i,finalDrop,false);
+                if(capability instanceof IItemHandlerModifiable) {
+                    for (int i = 7; i < capability.getSlots(); i++) {
+                        ItemStack item = capability.getStackInSlot(i);
+                        if (item.isEmpty()) {
+                            for (int j = 0; j < entity.hasStrengUP(entity); j++){
+                                capability.insertItem(i, finalDrop, false);
+                            }
+                            break;
+                        } else if (item.getItem() == finalDrop.getItem() && item.getCount() < capability.getSlotLimit(i)) {
+                            for (int l = 0; l < entity.hasStrengUP(entity); l++){
+                                capability.insertItem(i, finalDrop, false);
+                            }
                             break;
                         }
-                        LOGGER.info("Slot: "+i+" item: "+capability.getStackInSlot(i)+" quantity: "+capability.getStackInSlot(i).getCount()+" Cap: "+capability.getSlotLimit(i)+" Final: "+finalDrop);
                     }
                 }
             });
         }
     }
     public static void tick(Level pLevel, BlockPos pPos, BlockState pState, MechanicMinerBlockEntity pBlockEntity) {
-        if (pBlockEntity.progress == pBlockEntity.maxProgress) {
+        if (pBlockEntity.progress == pBlockEntity.hasSpeedUP(pBlockEntity)) {
+            pBlockEntity.hasStrengUP(pBlockEntity);
             setChanged(pLevel, pPos, pState);
             craft(pLevel,pPos,pBlockEntity);
             pBlockEntity.resetProgress();
@@ -348,32 +343,6 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
             pBlockEntity.progress++;
         }
     }
-    //Seta a Stabilidade
-    public static void setStabilit(MechanicMinerBlockEntity entity){
-        //Very Stable, Stable, Stabilized, Unstable, Very Unstable
-        int status = 0;
-        double stability = 0;
-        for(int i = 1; i <= 4; i++) {
-            //TODO
-            if (entity.itemHandler.getStackInSlot(i).getItem() == Items.INFESTED_COBBLESTONE){
-                status++;
-                switch (status){
-                    case 1: { MechanicMinerScreen.status = "Very Unstable"; break;}
-                    case 2: { MechanicMinerScreen.status = "Unstable"; break;}
-                    case 3: { MechanicMinerScreen.status = "Stable"; break;}
-                    case 4: { MechanicMinerScreen.status = "Very stable"; break;}
-                    default: { MechanicMinerScreen.status = "None"; break;}
-                }
-            }
-            //50 / 25 / 12.5 / 6.25
-            if(1 == 1){stability = stability + 3.125;}
-            if(1 == 1){stability = stability + 6.25;}
-            if(1 == 1){stability = stability + 12.5;}
-            if(1 == 1){stability = stability + 25;}
-            MechanicMinerScreen.stability = ((int) Math.ceil(stability));
-        }
-    }
-
     //Reseta o progresso
     private void resetProgress() {
         this.progress = 0;
