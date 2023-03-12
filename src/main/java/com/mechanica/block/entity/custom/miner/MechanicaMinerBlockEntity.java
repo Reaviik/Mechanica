@@ -2,8 +2,9 @@ package com.mechanica.block.entity.custom.miner;
 
 import com.mechanica.block.ModBlocks;
 import com.mechanica.block.entity.ModBlockEntities;
-import com.mechanica.block.screen.MechanicMiner.MechanicMinerMenu;
-import com.mechanica.block.screen.MechanicMiner.MechanicMinerScreen;
+import com.mechanica.block.screen.MechanicMiner.MechanicaMinerMenu;
+import com.mechanica.block.screen.MechanicMiner.MechanicaMinerScreen;
+import com.mechanica.config.MechanicaCommonConfigs;
 import com.mechanica.item.ModItems;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
@@ -40,7 +41,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 
-public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvider {
+public class MechanicaMinerBlockEntity extends BlockEntity implements MenuProvider {
     private final ItemStackHandler itemHandler = new ItemStackHandler(34) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -55,14 +56,14 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
     private int maxProgress = 180;
     private int quantity = 1;
     private static int matrix = 0;
-    public MechanicMinerBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ModBlockEntities.MECHANIC_MINER_BLOCK_ENTITY.get(), pPos, pBlockState);
+    public MechanicaMinerBlockEntity(BlockPos pPos, BlockState pBlockState) {
+        super(ModBlockEntities.MECHANICA_MINER_BLOCK_ENTITY.get(), pPos, pBlockState);
         this.data = new ContainerData() {
             @Override
             public int get(int pIndex) {
                 return switch (pIndex) {
-                    case 0 -> MechanicMinerBlockEntity.this.progress;
-                    case 1 -> MechanicMinerBlockEntity.this.maxProgress;
+                    case 0 -> MechanicaMinerBlockEntity.this.progress;
+                    case 1 -> MechanicaMinerBlockEntity.this.maxProgress;
                     default -> 0;
                 };
             }
@@ -70,8 +71,8 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
             @Override
             public void set(int pIndex, int pValue) {
                 switch (pIndex) {
-                    case 0 -> MechanicMinerBlockEntity.this.progress = pValue;
-                    case 1 -> MechanicMinerBlockEntity.this.maxProgress = pValue;
+                    case 0 -> MechanicaMinerBlockEntity.this.progress = pValue;
+                    case 1 -> MechanicaMinerBlockEntity.this.maxProgress = pValue;
                 }
             }
 
@@ -81,7 +82,6 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
             }
         };
     }
-
     @Override
     public Component getDisplayName() {
         return new TextComponent("Mechanic Miner");
@@ -89,7 +89,7 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        return new MechanicMinerMenu(pContainerId, pPlayerInventory, this, this.data);
+        return new MechanicaMinerMenu(pContainerId, pPlayerInventory, this);
     }
     @Nullable
     @Override
@@ -130,7 +130,7 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
 
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
-    public void hasSpeedUP(MechanicMinerBlockEntity entity) {
+    public void hasSpeedUP(MechanicaMinerBlockEntity entity) {
         int speed = 180;
         for (int i = 1; i <= 4; i++) {
             if (entity.itemHandler.getStackInSlot(i).getItem().getDefaultInstance().getItem() == Items.COBBLESTONE.getDefaultInstance().getItem()) {
@@ -139,7 +139,7 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
         }
         progress = speed;
     }
-    public void hasStrengUP(MechanicMinerBlockEntity entity) {
+    public void hasStrengUP(MechanicaMinerBlockEntity entity) {
         int streng = 1;
         for (int i = 1; i <= 4; i++) {
             //TODO
@@ -150,7 +150,7 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
         quantity = streng;
     }
     @Deprecated
-    private static boolean hasStructure(MechanicMinerBlockEntity entity){
+    private static boolean hasStructure(MechanicaMinerBlockEntity entity){
         String key = "minecraft:glass";
 
         BlockState structure = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(key)).defaultBlockState();
@@ -239,17 +239,17 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
             for (int j = 0; j < lastSix.length; j++) {
                 if (six == lastSix[j]) {
                     stability = stability + (j + 1);
-                    MechanicMinerScreen.stability = (int) (stability * 4.166);
+                    MechanicaMinerScreen.stability = (int) (stability * 4.166);
                     LOGGER.info(String.valueOf(stability));
                 }
             }
         }
         return stability != 0;
     }
-    public static boolean hasFull(LevelAccessor level, BlockPos pPos, MechanicMinerBlockEntity entity){
+    public static boolean hasFull(LevelAccessor level, BlockPos pPos, MechanicaMinerBlockEntity entity){
         return hasStabilizer(level,pPos) && hasStructure(entity);
     }
-    public static boolean isMatrix(MechanicMinerBlockEntity entity) {
+    public static boolean isMatrix(MechanicaMinerBlockEntity entity) {
         Item item = entity.itemHandler.getStackInSlot(0).getItem();
         //return item.is(ITags.Items.MATRIX);
         return item == ModItems.AQUAMIST_MATRIX.get() ||
@@ -259,7 +259,7 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
                 item == ModItems.SUNDUST_MATRIX.get() ||
                 item == ModItems.STARLUME_CRYSTAL.get();
     }
-    public static void craft(LevelAccessor level, BlockPos pPos, MechanicMinerBlockEntity entity){
+    public static void craft(LevelAccessor level, BlockPos pPos, MechanicaMinerBlockEntity entity){
         if(hasFull(level,pPos,entity) && isMatrix(entity)){
             ItemStack drop = null;
 
@@ -302,6 +302,8 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
             }
             ItemStack finalDrop = drop;
             BlockEntity inventory = level.getBlockEntity(pPos);
+            ItemStack netherite = Blocks.ANCIENT_DEBRIS.asItem().getDefaultInstance();
+            netherite.setCount(MechanicaCommonConfigs.NETHERITE_DROP_CHANCE.get());
             finalDrop.setCount(1);
             inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {
                 if(capability instanceof IItemHandlerModifiable) {
@@ -310,6 +312,7 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
                         if (item.isEmpty()) {
                             for (int j = 0; j < entity.quantity; j++){
                                 capability.insertItem(i, finalDrop, false);
+                                capability.insertItem(32, netherite, false);
                                 matrix--;
                                 if (matrix <= 0){
                                     capability.extractItem(0,1,true);
@@ -320,6 +323,9 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
                         } else if (item.getItem() == finalDrop.getItem() && item.getCount() < capability.getSlotLimit(i)) {
                             for (int l = 0; l < entity.quantity; l++){
                                 capability.insertItem(i, finalDrop, false);
+                                capability.insertItem(32, netherite, false);
+                                LOGGER.info(""+netherite);
+                                LOGGER.info(""+finalDrop);
                                 matrix--;
                                 if (matrix <= 0){
                                     capability.extractItem(0,1,true);
@@ -333,7 +339,7 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
             });
         }
     }
-    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, MechanicMinerBlockEntity pBlockEntity) {
+    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, MechanicaMinerBlockEntity pBlockEntity) {
         if (pBlockEntity.progress < pBlockEntity.maxProgress) {
             setChanged(pLevel, pPos, pState);
             pBlockEntity.progress++;
@@ -346,7 +352,6 @@ public class MechanicMinerBlockEntity extends BlockEntity implements MenuProvide
             pBlockEntity.resetProgress();
         }
     }
-    //Reseta o progresso
     private void resetProgress() {
         this.progress = 0;
     }

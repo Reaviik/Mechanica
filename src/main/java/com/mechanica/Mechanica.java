@@ -2,8 +2,10 @@ package com.mechanica;
 
 import com.mechanica.block.ModBlocks;
 import com.mechanica.block.entity.ModBlockEntities;
-import com.mechanica.block.screen.MechanicMiner.MechanicMinerScreen;
+import com.mechanica.block.screen.MechanicMiner.MechanicaMinerScreen;
 import com.mechanica.block.screen.ModMenuTypes;
+import com.mechanica.config.MechanicaClientConfigs;
+import com.mechanica.config.MechanicaCommonConfigs;
 import com.mechanica.item.ModItems;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -15,7 +17,9 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
@@ -47,13 +51,17 @@ public class Mechanica {
         modEventBus.addListener(this::setup);
         modEventBus.addListener(this::clientSetup);
 
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, MechanicaClientConfigs.SPEC,"mechanica-client.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MechanicaCommonConfigs.SPEC,"mechanica-common.toml");
+
         MinecraftForge.EVENT_BUS.register(this);
     }
     public void clientSetup(final FMLClientSetupEvent event){
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.MECHANIC_MINER.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.MECHANIC_MINER_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.STABILIZER.get(), RenderType.cutout());
 
-        MenuScreens.register(ModMenuTypes.MECHANIC_MINER_MENU.get(), MechanicMinerScreen::new);
+        MenuScreens.register(ModMenuTypes.MECHANICA_MINER_MENU.get(), MechanicaMinerScreen::new);
+
     }
     private void setup(final FMLCommonSetupEvent event) {
         // some preinit code

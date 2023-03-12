@@ -2,6 +2,30 @@
   "itemGroup.mechanica": "Mechanica",
   "tooltip.mechanica.pressShift": "Pressione §e[Shift]§f para descrições",
 
+  "block.mechanica.mechanica_miner_block": "Mineradora",
+  "tooltip.mechanica.mechanica_miner": "A minerador é uma estrutura multibloco\nUma extrutura de 5x5 de vidro oca com a Miner no centro \ne Estabilizadores do lado de fora mirando para dentro",
+
   "item.mechanica.stabilizer": "Stabilizador",
-  "item.mechanica.nome1_matrix": "nome1 Matriz"
+  "tooltip.mechanica.stabilizer": "Coloque do lado de fora da camara de vidro para estabilizar a mineradora",
+
+  "item.mechanica.starlumen_matrix": "Matriz Tier 1",
+  "item.mechanica.sundust_matrix": "Matriz Tier 2",
+
+  "item.mechanica.moonshadow_matrix": "Matriz Tier 3",
+  "item.mechanica.emberglow_matrix": "Matriz Tier 4",
+
+  "item.mechanica.aquamist_matrix": "Matriz Tier 5 ",
+  "item.mechanica.earthsong_matrix": "Matriz Tier 6",
+
+  "item.mechanica.starlume_crystal": "Cristal de Luz Estelar",
+  "item.mechanica.sundust_crystal": "Cristal de Pó Solar",
+
+  "item.mechanica.moonshadow_crystal": "Cristal de Sombra Lunar",
+  "item.mechanica.emberglow_crystal": "Cristal de Brasa Incandecente",
+
+  "item.mechanica.aquamist_crystal": "Cristal de Névoa",
+  "item.mechanica.earthsong_crystal": "Cristal de Sons da Terra",
+
+  "item.mechanica.speed_upgrade_lens": "Lente de upgrade de velocidade",
+  "item.mechanica.streng_upgrade_lens": "Lente de upgrade de força"
 }

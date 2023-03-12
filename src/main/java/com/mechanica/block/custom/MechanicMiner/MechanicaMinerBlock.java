@@ -1,7 +1,8 @@
 package com.mechanica.block.custom.MechanicMiner;
 
+
 import com.mechanica.block.entity.ModBlockEntities;
-import com.mechanica.block.entity.custom.miner.MechanicMinerBlockEntity;
+import com.mechanica.block.entity.custom.miner.MechanicaMinerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -24,66 +25,62 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class MechanicMiner extends BaseEntityBlock {
+public class MechanicaMinerBlock extends BaseEntityBlock {
+
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-
-    //Essencial
-    public MechanicMiner(Properties pProperties) {
-        super(pProperties);
+    public MechanicaMinerBlock(Properties properties) {
+        super(properties);
     }
-    //Molde Hitbox
-    private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 16, 16);
+
+    private static final VoxelShape SHAPE =
+            Block.box(0,0,0,16,16,16);
+
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext){
         return SHAPE;
     }
 
-    //Facing//
-    @SuppressWarnings("deprecated")
-    //Essencial
-    @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext){
         return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection().getOpposite());
     }
-    //Essencial
     @Override
     public BlockState rotate(BlockState pState, Rotation pRotation){
-        return pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
+        return  pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
     }
-    //Essencial
     @Override
     public BlockState mirror(BlockState pState, Mirror pMirror){
         return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
     }
-    //Essencial
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder){
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> pBuilder){
         pBuilder.add(FACING);
     }
-    //BLOCK ENTITY \|/
+    /* BLOCK ENTITY */
+
     @Override
-    public RenderShape getRenderShape(BlockState pState){
+    public RenderShape getRenderShape(BlockState pState) {
         return RenderShape.MODEL;
     }
+
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof MechanicMinerBlockEntity) {
-                ((MechanicMinerBlockEntity) blockEntity).drops();
+            if (blockEntity instanceof MechanicaMinerBlockEntity) {
+                ((MechanicaMinerBlockEntity) blockEntity).drops();
             }
         }
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
     }
-    //Quando o Player clica no bloco
+
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos,Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if (entity instanceof MechanicMinerBlockEntity) {
-                NetworkHooks.openGui(((ServerPlayer) pPlayer), (MechanicMinerBlockEntity) entity, pPos);
+            if(entity instanceof MechanicaMinerBlockEntity) {
+                NetworkHooks.openGui(((ServerPlayer)pPlayer), (MechanicaMinerBlockEntity)entity, pPos);
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
@@ -91,15 +88,16 @@ public class MechanicMiner extends BaseEntityBlock {
 
         return InteractionResult.sidedSuccess(pLevel.isClientSide());
     }
-    //Define o bloco como entidade
+
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new MechanicMinerBlockEntity(pPos, pState);
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new MechanicaMinerBlockEntity(blockPos, blockState);
     }
-    //Pega o tick atual do bloco
+    @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker getTicker(Level plevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return createTickerHelper(pBlockEntityType, ModBlockEntities.MECHANIC_MINER_BLOCK_ENTITY.get(), MechanicMinerBlockEntity::tick);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.MECHANICA_MINER_BLOCK_ENTITY.get(),
+                MechanicaMinerBlockEntity::tick);
     }
 }

@@ -2,7 +2,7 @@ package com.mechanica.block;
 
 
 import com.mechanica.Mechanica;
-import com.mechanica.block.custom.MechanicMiner.MechanicMiner;
+import com.mechanica.block.custom.MechanicMiner.MechanicaMinerBlock;
 import com.mechanica.block.custom.Stabilizers.Stabilizer;
 import com.mechanica.item.ModCreativeModeTab;
 import com.mechanica.item.ModItems;
@@ -27,12 +27,12 @@ public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, Mechanica.MOD_ID);
 
-    public static final RegistryObject<Block> MECHANIC_MINER = registerBlock("mechanica_miner",
-            () -> new MechanicMiner(BlockBehaviour.Properties.of(Material.METAL).noOcclusion()
-                    .strength(9f).lightLevel(LUZ -> {return 1;})), ModCreativeModeTab.Mechanica_TAB);
+    public static final RegistryObject<Block> MECHANIC_MINER_BLOCK = registerBlock("mechanica_miner_block",
+            () -> new MechanicaMinerBlock(BlockBehaviour.Properties.of(Material.METAL).noOcclusion()
+                    .strength(9f).lightLevel(LUZ -> {return 1;})), ModCreativeModeTab.Mechanica_TAB,"mechanica_miner");
     public static final RegistryObject<Block> STABILIZER = registerBlock("stabilizer",
             () -> new Stabilizer(BlockBehaviour.Properties.of(Material.METAL).noOcclusion()
-                    .strength(3f).lightLevel(LUZ -> {return 1;})), ModCreativeModeTab.Mechanica_TAB);
+                    .strength(3f).lightLevel(LUZ -> {return 1;})), ModCreativeModeTab.Mechanica_TAB,"stabilizer");
 
 
     //Tooltip

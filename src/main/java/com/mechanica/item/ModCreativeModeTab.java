@@ -8,7 +8,7 @@ public class ModCreativeModeTab {
     public static final CreativeModeTab Mechanica_TAB = new CreativeModeTab("Mechanica"){
         @Override
         public ItemStack makeIcon() {
-                return new ItemStack(ModBlocks.MECHANIC_MINER.get());
+                return new ItemStack(ModItems.AQUAMIST_MATRIX.get());
         }
     };
 }

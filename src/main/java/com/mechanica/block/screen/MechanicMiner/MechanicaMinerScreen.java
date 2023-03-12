@@ -11,13 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.slf4j.Logger;
 
-public class MechanicMinerScreen extends AbstractContainerScreen<MechanicMinerMenu> {
+public class MechanicaMinerScreen extends AbstractContainerScreen<MechanicaMinerMenu> {
 
     //O caminho até a textura da GUI é setado aqui
     private static final ResourceLocation TEXTURE =
-            new ResourceLocation(Mechanica.MOD_ID, "textures/gui/mechanic_miner_gui.png");
+            new ResourceLocation(Mechanica.MOD_ID, "textures/gui/mechanica_miner_gui.png");
     //Define a Scream
-    public MechanicMinerScreen(MechanicMinerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
+    public MechanicaMinerScreen(MechanicaMinerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
     }
     public static String status = "";

@@ -7,5 +7,5 @@ import net.minecraftforge.common.ForgeTier;
 
 public class ModTiers {
     public static final ForgeTier MECHANICA = new ForgeTier(4, 2652, 14.0f, 10.0f, 44, BlockTags.NEEDS_DIAMOND_TOOL,
-            () -> Ingredient.of(ModBlocks.MECHANIC_MINER.get()));
+            () -> Ingredient.of(ModBlocks.MECHANIC_MINER_BLOCK.get()));
 }

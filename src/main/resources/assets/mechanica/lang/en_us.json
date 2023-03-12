@@ -2,7 +2,32 @@
   "itemGroup.mechanica": "Mechanica",
   "tooltip.mechanica.pressShift": "Press §e[Shift]§f to description",
 
+  "block.mechanica.mechanica_miner_block": "Miner",
+  "tooltip.mechanica.mechanica_miner": "Miner is a Multiblock structure\nA 5x5 hollow glass extrusion with the Miner in the center \nand Stabilizers on the outside looking inward",
+
   "item.mechanica.stabilizer": "Stabilizer",
-  "item.mechanica.nome1_matrix": "nome1 Matrix",
-  "tooltip.minersdream.pressShift": "Pressione Shift para +"
+  "tooltip.mechanica.stabilizer": "Place outside a glass chamber to stabilize the Miner",
+
+  "item.mechanica.starlumen_matrix": "Tier 1 Matrix",
+  "item.mechanica.sundust_matrix":"Tier 2 Matrix",
+
+  "item.mechanica.moonshadow_matrix": "Tier 3 Matrix",
+  "item.mechanica.emberglow_matrix": "Tier 4 Matrix",
+
+  "item.mechanica.aquamist_matrix":"Tier 5 Matrix",
+  "item.mechanica.earthsong_matrix": "Tier 6 Matrix",
+
+  "item.mechanica.starlume_crystal": "Starlumen Crystal",
+  "item.mechanica.sundust_crystal": "Sundust Crystal",
+
+  "item.mechanica.moonshadow_crystal": "Moonshadow Crystal",
+  "item.mechanica.emberglow_crystal": "Emberglow Crystal",
+
+  "item.mechanica.aquamist_crystal": "Aquamist Crystal",
+  "item.mechanica.earthsong_crystal": "Earthsong Crystal",
+
+  "item.mechanica.speed_upgrade_lens": "Speed Upgrade Lens",
+  "item.mechanica.streng_upgrade_lens": "Streng Upgrade Lens"
+
+
 }

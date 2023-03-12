@@ -1,11 +1,12 @@
 package com.mechanica.block.screen.MechanicMiner;
 
 import com.mechanica.block.ModBlocks;
-import com.mechanica.block.entity.custom.miner.MechanicMinerBlockEntity;
+import com.mechanica.block.entity.custom.miner.MechanicaMinerBlockEntity;
 import com.mechanica.block.screen.ModMenuTypes;
 import com.mechanica.block.screen.slot.ModInputSlot;
+import com.mechanica.block.screen.slot.ModMinerStrengSlot;
 import com.mechanica.block.screen.slot.ModResultSlot;
-import com.mechanica.block.screen.slot.ModUpgradeSlot;
+import com.mechanica.block.screen.slot.ModMinerSpeedSlot;
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,22 +19,20 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-public class MechanicMinerMenu extends AbstractContainerMenu {
-    private final MechanicMinerBlockEntity blockEntity;
+public class MechanicaMinerMenu extends AbstractContainerMenu {
+    private final MechanicaMinerBlockEntity blockEntity;
     private final Level level;
-    private final ContainerData data;
 
-    public MechanicMinerMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
+    public MechanicaMinerMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
+        this(pContainerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
     }
     private static final Logger LOGGER = LogUtils.getLogger();
     //Responsavel por setar a posição dos slots
-    public MechanicMinerMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
-        super(ModMenuTypes.MECHANIC_MINER_MENU.get(), pContainerId);
+    public MechanicaMinerMenu(int pContainerId, Inventory inv, BlockEntity entity) {
+        super(ModMenuTypes.MECHANICA_MINER_MENU.get(), pContainerId);
         checkContainerSize(inv, 34);
-        blockEntity = ((MechanicMinerBlockEntity) entity);
+        blockEntity = ((MechanicaMinerBlockEntity) entity);
         this.level = inv.player.level;
-        this.data = data;
         //Não sei
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
@@ -41,15 +40,15 @@ public class MechanicMinerMenu extends AbstractContainerMenu {
             //Slot de entrada
             this.addSlot(new ModInputSlot(handler, 0, 19, -31));
             //Slots 1,2,3 slots de upgrade
-            //       1
-            // 0   2 3 4
+            //       1 2
+            // 0     3 4
             //       5 6
-            this.addSlot(new ModUpgradeSlot(handler, 1, 115, -49));
-            this.addSlot(new ModUpgradeSlot(handler, 2, 97, -31));
-            this.addSlot(new ModUpgradeSlot(handler, 3, 115, -31));
-            this.addSlot(new ModUpgradeSlot(handler, 4, 133, -31));
-            this.addSlot(new ModUpgradeSlot(handler, 5, 115, -13));
-            this.addSlot(new ModUpgradeSlot(handler, 6, 133, -13));
+            this.addSlot(new ModMinerSpeedSlot(handler, 1, 115, -49));
+            this.addSlot(new ModMinerSpeedSlot(handler, 2, 133, -49));
+            this.addSlot(new ModMinerStrengSlot(handler, 3, 115, -31));
+            this.addSlot(new ModMinerStrengSlot(handler, 4, 133, -31));
+            this.addSlot(new ModMinerStrengSlot(handler, 5, 115, -13));
+            this.addSlot(new ModMinerStrengSlot(handler, 6, 133, -13));
             //Primeira fileira
             this.addSlot(new ModResultSlot(handler, 7, 8, 14));
             this.addSlot(new ModResultSlot(handler, 8, 26, 14));
@@ -141,7 +140,7 @@ public class MechanicMinerMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(@NotNull Player pPlayer) {
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
-                pPlayer, ModBlocks.MECHANIC_MINER.get());
+                pPlayer, ModBlocks.MECHANIC_MINER_BLOCK.get());
     }
     //Faz 0 sentido pra min, porque ta adicionando slot ao inventario do player? e o meu inventario? só o player ganha slot extra?
     private void addPlayerInventory(Inventory playerInventory) {
